@@ -44,4 +44,17 @@ const optionalAuth = async (req, res, next) => {
   }
 };
 
-module.exports = { verifyToken, optionalAuth };
+// Middleware para verificar que el usuario sea admin
+const verifyAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Acceso denegado. Token requerido.' });
+  }
+  
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Acceso denegado. Se requieren permisos de administrador.' });
+  }
+  
+  next();
+};
+
+module.exports = { verifyToken, optionalAuth, verifyAdmin };
